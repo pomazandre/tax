@@ -1,0 +1,25 @@
+<p-dialog header="Ошибка" [(visible)]="display" modal="modal" width="300" *ngIf="Visible">
+  <div class="ui-g-12">
+    <div class="ui-g-3">
+      <img src="{{Url}}error.png" alt="">
+    </div>
+    <div class="ui-g-9">
+      {{mdlText}}
+    </div>
+  </div>
+  <hr/>
+  <div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:15px;padding:3px;">
+    <div class="ui-g-12 ui-lg-12">
+      <div class="ui-g-2 ui-md-2 ui-lg-2">
+        <button type="button" pButton  (click)="close()">
+          <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjQ2LDguMjlhMSwxLDAsMCwwLTEuNDIsMGwtMywzYTEsMSwwLDAsMCwwLDEuNDJsMywzYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40Mkw5LjE2LDEybDIuMy0yLjI5QTEsMSwwLDAsMCwxMS40Niw4LjI5Wk0xNC42NiwxMiwxNyw5LjcxYTEsMSwwLDAsMC0xLjQyLTEuNDJsLTMsM2ExLDEsMCwwLDAsMCwxLjQybDMsM2ExLDEsMCwwLDAsMS40MiwwLDEsMSwwLDAsMCwwLTEuNDJaIi8+PC9zdmc+">  
+        </button>
+      </div>
+      <div class="ui-g-10 ui-md-10 ui-lg-10">
+      </div>
+    </div>
+  </div>
+
+</p-dialog>
+
+

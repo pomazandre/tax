@@ -1,0 +1,81 @@
+<h2>Детальный отчет</h2>
+
+<div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:15px;padding:3px;">
+  <div class="ui-g-12">
+    <div class="ui-g-1">
+      <button type="button" pButton  (click)="handleBack()" pTooltip="Назад" tooltipPosition="top">
+        <!-- <img  height="20" src="{{Url}}icons/back.svg">   -->
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjQ2LDguMjlhMSwxLDAsMCwwLTEuNDIsMGwtMywzYTEsMSwwLDAsMCwwLDEuNDJsMywzYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40Mkw5LjE2LDEybDIuMy0yLjI5QTEsMSwwLDAsMCwxMS40Niw4LjI5Wk0xNC42NiwxMiwxNyw5LjcxYTEsMSwwLDAsMC0xLjQyLTEuNDJsLTMsM2ExLDEsMCwwLDAsMCwxLjQybDMsM2ExLDEsMCwwLDAsMS40MiwwLDEsMSwwLDAsMCwwLTEuNDJaIi8+PC9zdmc+">  
+      </button>
+    </div>
+    <div class="ui-g-1">
+      <button type="button" pButton  (click)="handlePrint()" pTooltip="Печать" tooltipPosition="top">
+        <!--- <img  height="20" src="{{Url}}icons/printer.svg">    -->
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTcsMTBhMSwxLDAsMSwwLDEsMUExLDEsMCwwLDAsNywxMFpNMTksNkgxOFYzYTEsMSwwLDAsMC0xLTFIN0ExLDEsMCwwLDAsNiwzVjZINUEzLDMsMCwwLDAsMiw5djZhMywzLDAsMCwwLDMsM0g2djNhMSwxLDAsMCwwLDEsMUgxN2ExLDEsMCwwLDAsMS0xVjE4aDFhMywzLDAsMCwwLDMtM1Y5QTMsMywwLDAsMCwxOSw2Wk04LDRoOFY2SDhabTgsMTZIOFYxNmg4Wm00LTVhMSwxLDAsMCwxLTEsMUgxOFYxNWExLDEsMCwwLDAtMS0xSDdhMSwxLDAsMCwwLTEsMXYxSDVhMSwxLDAsMCwxLTEtMVY5QTEsMSwwLDAsMSw1LDhIMTlhMSwxLDAsMCwxLDEsMVoiLz48L3N2Zz4=">  
+      </button>
+    </div>
+    <div class="ui-g-1">
+      <button type="button" pButton (click)="handleSave()" pTooltip="Сохранить HTML" tooltipPosition="top">
+        <!-- <img  height="20" src="{{Url}}icons/save.svg">    -->
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMjAuNzEsOS4yOWwtNi02YTEsMSwwLDAsMC0uMzItLjIxQTEuMDksMS4wOSwwLDAsMCwxNCwzSDZBMywzLDAsMCwwLDMsNlYxOGEzLDMsMCwwLDAsMywzSDE4YTMsMywwLDAsMCwzLTNWMTBBMSwxLDAsMCwwLDIwLjcxLDkuMjlaTTksNWg0VjdIOVptNiwxNEg5VjE2YTEsMSwwLDAsMSwxLTFoNGExLDEsMCwwLDEsMSwxWm00LTFhMSwxLDAsMCwxLTEsMUgxN1YxNmEzLDMsMCwwLDAtMy0zSDEwYTMsMywwLDAsMC0zLDN2M0g2YTEsMSwwLDAsMS0xLTFWNkExLDEsMCwwLDEsNiw1SDdWOEExLDEsMCwwLDAsOCw5aDZhMSwxLDAsMCwwLDEtMVY2LjQxbDQsNFoiLz48L3N2Zz4=">  
+      </button>
+    </div>
+    <div class="ui-g-9">
+    </div>
+  </div>
+</div>
+
+<p-dataList [value]="calcRespView">
+  <ng-template let-item pTemplate="item">
+    <div class="ui-grid ui-grid-responsive ui-fluid"
+      style="font-size:15px;padding:3px;border-bottom:1px solid #D5D5D5;">
+      <div class="ui-grid-row" *ngIf="notEmptyItem(item.label)&&(!isCurrency(item.label))">
+        <div class="ui-grid-col-6" >
+          <b>{{item.label}}</b>
+        </div>
+        <div class="ui-grid-col-6">
+          {{item.value}}
+        </div>
+      </div>
+      <div class="ui-grid-row" *ngIf="isCurrency(item.label)">
+      <div class="ui-grid-col-6">
+        <i>{{item.label}}</i>
+      </div>
+      <div class="ui-grid-col-6">
+        <i>{{item.value}}</i>
+      </div>
+    </div>
+      <div class="ui-grid-row" *ngIf="!notEmptyItem(item.label)">
+        <div class="ui-grid-col-6">
+          <p></p>
+        </div>
+        <div class="ui-grid-col-6">
+          <p></p>
+        </div>
+      </div>
+    </div>
+
+  </ng-template>
+</p-dataList>
+<p></p>
+<div class="ui-grid ui-grid-responsive ui-fluid" style="font-size:15px;padding:3px;">
+  <div class="ui-g-12">
+    <div class="ui-g-1">
+      <button type="button" pButton  (click)="handleBack()" pTooltip="Назад" tooltipPosition="top">
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjQ2LDguMjlhMSwxLDAsMCwwLTEuNDIsMGwtMywzYTEsMSwwLDAsMCwwLDEuNDJsMywzYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40Mkw5LjE2LDEybDIuMy0yLjI5QTEsMSwwLDAsMCwxMS40Niw4LjI5Wk0xNC42NiwxMiwxNyw5LjcxYTEsMSwwLDAsMC0xLjQyLTEuNDJsLTMsM2ExLDEsMCwwLDAsMCwxLjQybDMsM2ExLDEsMCwwLDAsMS40MiwwLDEsMSwwLDAsMCwwLTEuNDJaIi8+PC9zdmc+">  
+      </button>
+    </div>
+    <div class="ui-g-1">
+      <button type="button" pButton  (click)="handlePrint()" pTooltip="Печать" tooltipPosition="top">
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTcsMTBhMSwxLDAsMSwwLDEsMUExLDEsMCwwLDAsNywxMFpNMTksNkgxOFYzYTEsMSwwLDAsMC0xLTFIN0ExLDEsMCwwLDAsNiwzVjZINUEzLDMsMCwwLDAsMiw5djZhMywzLDAsMCwwLDMsM0g2djNhMSwxLDAsMCwwLDEsMUgxN2ExLDEsMCwwLDAsMS0xVjE4aDFhMywzLDAsMCwwLDMtM1Y5QTMsMywwLDAsMCwxOSw2Wk04LDRoOFY2SDhabTgsMTZIOFYxNmg4Wm00LTVhMSwxLDAsMCwxLTEsMUgxOFYxNWExLDEsMCwwLDAtMS0xSDdhMSwxLDAsMCwwLTEsMXYxSDVhMSwxLDAsMCwxLTEtMVY5QTEsMSwwLDAsMSw1LDhIMTlhMSwxLDAsMCwxLDEsMVoiLz48L3N2Zz4=">  
+      </button>
+    </div>
+    <div class="ui-g-1">
+      <button type="button" pButton (click)="handleSave()" pTooltip="Сохранить HTML" tooltipPosition="top">
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMjAuNzEsOS4yOWwtNi02YTEsMSwwLDAsMC0uMzItLjIxQTEuMDksMS4wOSwwLDAsMCwxNCwzSDZBMywzLDAsMCwwLDMsNlYxOGEzLDMsMCwwLDAsMywzSDE4YTMsMywwLDAsMCwzLTNWMTBBMSwxLDAsMCwwLDIwLjcxLDkuMjlaTTksNWg0VjdIOVptNiwxNEg5VjE2YTEsMSwwLDAsMSwxLTFoNGExLDEsMCwwLDEsMSwxWm00LTFhMSwxLDAsMCwxLTEsMUgxN1YxNmEzLDMsMCwwLDAtMy0zSDEwYTMsMywwLDAsMC0zLDN2M0g2YTEsMSwwLDAsMS0xLTFWNkExLDEsMCwwLDEsNiw1SDdWOEExLDEsMCwwLDAsOCw5aDZhMSwxLDAsMCwwLDEtMVY2LjQxbDQsNFoiLz48L3N2Zz4=">  
+      </button>
+    </div>
+    <div class="ui-g-9">
+    </div>
+  </div>
+</div>

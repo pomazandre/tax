@@ -1,0 +1,629 @@
+﻿<style>
+  .boldd {
+    font-weight: 900 !important;
+  }
+  img {
+    height : 22px;
+  }
+</style>
+<app-progress></app-progress>
+<app-error></app-error>
+<p-blockUI [blocked]="mdlBlockUI"></p-blockUI>
+<app-route></app-route>
+<app-route-pair></app-route-pair>
+<app-testPanel (onTestRuns)="runTests()"></app-testPanel>
+<app-shortrepPanel></app-shortrepPanel>
+<app-hint></app-hint>
+<app-paragrafPanel></app-paragrafPanel>
+
+<div class="content-section implementation ui-fluid">
+  <p-accordion>
+    <p-accordionTab header="Маршрут следования" [selected]="true" class="boldd">
+      <p-fieldset legend="Отправление">
+        <div class="ui-g">
+          <div class="ui-g-12  ui-lg-6">
+            <div class="ui-g-12 ui-md-12 ui-lg-2" [ngClass]="{offset:true}">
+              Станция*
+            </div>
+
+            <div class="ui-g-12 ui-lg-10">
+              <div class="ui-g-12 ui-md-6 ui-lg-7">
+                <p-autoComplete #outStation [(ngModel)]="mdlOutStation" [suggestions]="stationSuggestions"
+                  (completeMethod)="filterOutStations($event)" (onSelect)="handleSelectOutStation()" [minLength]="2"
+                  placeholder="наименование или код" (mouseenter)="handleMouseEnter($event, outStation, mdlOutStation)"
+                  (mouseleave)="handleMouseLeave()" [inputStyleClass]="mdlOutStationFilled" (ngModelChange)="handleOutStationChange()" >
+                </p-autoComplete>
+              </div>
+              <div class="ui-g-12 ui-md-5 ui-lg-3">
+                <input type="text" pInputText [(ngModel)]="mdlOutStationCode" [ngClass]="{highlight:mdlOutStationCodeFilled}" readonly />
+              </div>
+              <div class="ui-g-12 ui-md-1 ui-lg-1">
+                <button pButton type="button" aria-hidden="true" 
+                  (click)="handleOutStationParagraf()" [disabled]="btnOutStationParagrafDisabled"
+                  [ngClass]="{'dropdownbutton': true,'svg-padding':true}" pTooltip="Параграф" tooltipPosition="right">
+                  <!--<img  src="{{Url}}icons/paragraf.svg"> -->
+                  <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMTMsN0gxMEExLDEsMCwwLDAsOSw4djhhMSwxLDAsMCwwLDIsMFYxNGgyYTMsMywwLDAsMCwzLTNWMTBBMywzLDAsMCwwLDEzLDdabTEsNGExLDEsMCwwLDEtMSwxSDExVjloMmExLDEsMCwwLDEsMSwxWk0xMiwyQTEwLDEwLDAsMSwwLDIyLDEyLDEwLDEwLDAsMCwwLDEyLDJabTAsMThhOCw4LDAsMSwxLDgtOEE4LDgsMCwwLDEsMTIsMjBaIi8+PC9zdmc+">
+                </button>
+              </div>
+              <div class="ui-g-12 ui-lg-1">
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-lg-6">
+            <div class="ui-g-12 ui-md-12 ui-lg-2" [ngClass]="{offset:true}">
+              Страна
+            </div>
+
+            <div class="ui-g-12 ui-lg-10">
+              <div class="ui-g-12 ui-md-6 ui-lg-8">
+                <p-autoComplete #outCountry [(ngModel)]="mdlOutCountry" [suggestions]="countrySuggestions"
+                  (completeMethod)="filterOutCountries($event)" (onSelect)="handleSelectOutCountry()" [minLength]="2"
+                  placeholder="наименование или код" [disabled]="mdlOutCountryDisabled"
+                  [inputStyleClass]="mdlOutCountryFilled" >
+                </p-autoComplete>
+
+              </div>
+              <div class="ui-g-12 ui-md-5 ui-lg-3">
+                <input type="text" pInputText [(ngModel)]="mdlOutCountryCode" [ngClass]="{highlight:mdlOutCountryCodeFilled}" [disabled]="mdlOutCountryDisabled" />
+              </div>
+              <div class="ui-g-12 ui-md-1 ui-lg-1">
+                <button pButton type="button" aria-hidden="true" 
+                  (click)="handleReverseStations()" [disabled]="btnReverseStationsDisabled"
+                  pTooltip="Инверсия станций" tooltipPosition="right"
+                  [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+                  <!-- <img src="{{Url}}icons/reverse.svg" > -->   
+                  <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE5LjkxLDE1LjUxSDE1LjM4YTEsMSwwLDAsMCwwLDJoMi40QTgsOCwwLDAsMSw0LDEyYTEsMSwwLDAsMC0yLDAsMTAsMTAsMCwwLDAsMTYuODgsNy4yM1YyMWExLDEsMCwwLDAsMiwwVjE2LjVBMSwxLDAsMCwwLDE5LjkxLDE1LjUxWk0xNSwxMmEzLDMsMCwxLDAtMywzQTMsMywwLDAsMCwxNSwxMlptLTQsMGExLDEsMCwxLDEsMSwxQTEsMSwwLDAsMSwxMSwxMlpNMTIsMkExMCwxMCwwLDAsMCw1LjEyLDQuNzdWM2ExLDEsMCwwLDAtMiwwVjcuNWExLDEsMCwwLDAsMSwxaDQuNWExLDEsMCwwLDAsMC0ySDYuMjJBOCw4LDAsMCwxLDIwLDEyYTEsMSwwLDAsMCwyLDBBMTAsMTAsMCwwLDAsMTIsMloiLz48L3N2Zz4=">      
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </p-fieldset>
+
+      <p-fieldset legend="Прибытие">
+        <div class="ui-g">
+
+          <div class="ui-g-12  ui-lg-6">
+            <div class="ui-g-12 ui-md-12 ui-lg-2" [ngClass]="{offset:true}">
+              Станция*
+            </div>
+
+            <div class="ui-g-12 ui-lg-10">
+              <div class="ui-g-12 ui-md-6 ui-lg-7">
+                <p-autoComplete #destStation [(ngModel)]="mdlDestStation" [suggestions]="stationSuggestions"
+                  (completeMethod)="filterDestStations($event)" (onSelect)="handleSelectDestStation()" [minLength]="2"
+                  placeholder="наименование или код"
+                  (mouseenter)="handleMouseEnter($event, destStation, mdlDestStation)"
+                  (mouseleave)="handleMouseLeave()" [inputStyleClass]="mdlDestStationFilled"
+                  (ngModelChange)="handleDestStationChange()" > 
+                </p-autoComplete>
+              </div>
+              <div class="ui-g-12 ui-md-5 ui-lg-3">
+                <input type="text" pInputText [(ngModel)]="mdlDestStationCode" [ngClass]="{highlight:mdlDestStationCodeFilled}" readonly />
+              </div>
+              <div class="ui-g-12 ui-md-1 ui-lg-1">
+                <button pButton type="button" aria-hidden="true"
+                  (click)="handleDestStationParagraf()" [disabled]="btnDestStationParagrafDisabled"
+                  pTooltip="Параграф" tooltipPosition="right"
+                  [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+                  <!-- <img  src="{{Url}}icons/paragraf.svg">   -->
+                  <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZGRkZGIiBkPSJNMTMsN0gxMEExLDEsMCwwLDAsOSw4djhhMSwxLDAsMCwwLDIsMFYxNGgyYTMsMywwLDAsMCwzLTNWMTBBMywzLDAsMCwwLDEzLDdabTEsNGExLDEsMCwwLDEtMSwxSDExVjloMmExLDEsMCwwLDEsMSwxWk0xMiwyQTEwLDEwLDAsMSwwLDIyLDEyLDEwLDEwLDAsMCwwLDEyLDJabTAsMThhOCw4LDAsMSwxLDgtOEE4LDgsMCwwLDEsMTIsMjBaIi8+PC9zdmc+">
+                </button>
+              </div>
+              <div class="ui-g-12 ui-lg-1">
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-lg-6">
+            <div class="ui-g-12 ui-md-12 ui-lg-2" [ngClass]="{offset:true}">
+              Страна
+            </div>
+            <div class="ui-g-12 ui-lg-10">
+              <div class="ui-g-12 ui-md-6 ui-lg-8">
+                <p-autoComplete #inCountry [(ngModel)]="mdlDestCountry" [suggestions]="countrySuggestions"
+                  (completeMethod)="filterDestCountries($event)" (onSelect)="handleSelectDestCountry()" [minLength]="2"
+                  placeholder="наименование или код" [disabled]="mdlDestCountryDisabled"
+                  [inputStyleClass]="mdlDestCountryFilled" >
+                </p-autoComplete>
+
+              </div>
+
+              <div class="ui-g-12 ui-md-5 ui-lg-3">
+                <input type="text" pInputText [(ngModel)]="mdlDestCountryCode" [ngClass]="{highlight:mdlDestCountryCodeFilled}" [disabled]="mdlDestCountryDisabled" />
+              </div>
+              <div class="ui-g-12 ui-md-1 ui-lg-1">
+              </div>
+            </div>
+          </div>
+
+          <div class="ui-g-12 ui-lg-12">
+
+            <div class="ui-g-12 ui-lg-10">
+              <div class="ui-g-12 ui-md-3 ui-lg-2" [ngClass]="{offset:true}">
+                Расстояние, км
+              </div>
+
+              <div class="ui-g-12 ui-md-3 ui-lg-1">
+                <input type="text" pInputText [(ngModel)]="mdlTotalDist" readonly />
+              </div>
+
+              <div class="ui-g-12 ui-md-3 ui-lg-2">
+                <button pButton #route type="button" pTooltip="Маршрут"
+                  (click)="handleRoute()" *ngIf="btnRouteDisplay"
+                  [ngClass]="{'dropdownbutton': true,'svg-padding':true}" tooltipPosition="right">
+                  <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTEyLDJhOCw4LDAsMCwwLTgsOGMwLDUuNCw3LjA1LDExLjUsNy4zNSwxMS43NmExLDEsMCwwLDAsMS4zLDBDMTMsMjEuNSwyMCwxNS40LDIwLDEwQTgsOCwwLDAsMCwxMiwyWm0wLDE3LjY1Yy0yLjEzLTItNi02LjMxLTYtOS42NWE2LDYsMCwwLDEsMTIsMEMxOCwxMy4zNCwxNC4xMywxNy42NiwxMiwxOS42NVpNMTIsNmE0LDQsMCwxLDAsNCw0QTQsNCwwLDAsMCwxMiw2Wm0wLDZhMiwyLDAsMSwxLDItMkEyLDIsMCwwLDEsMTIsMTJaIi8+PC9zdmc+">
+                </button>
+                <button pButton #routePair type="button" pTooltip="Парный маршрут "
+                  (click)="handlePairRoute()" *ngIf="btnPairRouteDisplay"
+                  [ngClass]="{'dropdownbutton': true,'svg-padding':true}" tooltipPosition="right">
+                  <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE0LDkuNDVIMTN2LTFhMSwxLDAsMCwwLTIsMHYxSDEwYTEsMSwwLDAsMCwwLDJoMXYxYTEsMSwwLDAsMCwyLDB2LTFoMWExLDEsMCwwLDAsMC0yWm02LjQ2LjE4QTguNSw4LjUsMCwxLDAsNiwxNi40Nmw1LjMsNS4zMWExLDEsMCwwLDAsMS40MiwwTDE4LDE2LjQ2QTguNDYsOC40NiwwLDAsMCwyMC40Niw5LjYzWk0xNi42LDE1LjA1LDEyLDE5LjY1bC00LjYtNC42QTYuNDksNi40OSwwLDAsMSw1LjUzLDkuODMsNi41Nyw2LjU3LDAsMCwxLDguNDIsNWE2LjQ3LDYuNDcsMCwwLDEsNy4xNiwwLDYuNTcsNi41NywwLDAsMSwyLjg5LDQuODFBNi40OSw2LjQ5LDAsMCwxLDE2LjYsMTUuMDVaIi8+PC9zdmc+">
+                </button>
+              </div>
+
+              <div class="ui-g-12 ui-md-3 ui-lg-3" [ngClass]="{offset:true}" *ngIf="belDistDisplay">
+                Расстояние по БЧ, км
+              </div>
+
+              <div class="ui-g-12 ui-md-2 ui-lg-2" *ngIf="belDistDisplay">
+                <input type="text" pInputText [(ngModel)]="mdlBelDist" readonly />
+              </div>
+              <div class="ui-g-12 ui-md-1 ui-lg-1">
+
+              </div>
+            </div>
+            <div class="ui-g-12 ui-lg-2">
+            </div>
+          </div>
+        </div>
+      </p-fieldset>
+      
+      <p-fieldset *ngIf="visibleTransitPanel" legend="Транзит по БЧ">
+        <div class="ui-g">
+          <div class="ui-g-12 ui-md-6 ui-lg-2" [ngClass]="{offset:true}">
+            Входной стык приема
+          </div>
+          <div class="ui-g-12 ui-md-5 ui-lg-3">
+            <p-autoComplete #receptionJoint [(ngModel)]="mdlReceptionJoint"
+              [suggestions]="stationSuggestions" (completeMethod)="filterJoints($event)"
+              (onSelect)="handleSelectReceptionJoint()" [minLength]="2" placeholder="наименование или код"
+              (ngModelChange)="handleReceptionJointChange()" [inputStyleClass]="mdlReceptionJointFilled" >
+            </p-autoComplete>
+          </div>
+          <div class="ui-g-12 ui-lg-1 ui-md-1">
+            <button pButton type="button"
+            [ngClass]="{'dropdownbutton': true,'svg-padding':true}" (click)="handleReceptionJointDropdown(receptionJoint)" >
+              <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDExLjQ2YTEsMSwwLDAsMCwxLjQyLDBsMy0zQTEsMSwwLDEsMCwxNC4yOSw3TDEyLDkuMzQsOS43MSw3QTEsMSwwLDEsMCw4LjI5LDguNDZabTMsMS4wOEwxMiwxNC44NGwtMi4yOS0yLjNBMSwxLDAsMCwwLDguMjksMTRsMywzYTEsMSwwLDAsMCwxLjQyLDBsMy0zYTEsMSwwLDAsMC0xLjQyLTEuNDJaIi8+PC9zdmc+">  
+            </button> 
+          </div>
+          <div class="ui-g-12 ui-md-6 ui-lg-2" [ngClass]="{offset:true}">
+            Выходной стык сдачи
+          </div>
+          <div class="ui-g-12 ui-md-5 ui-lg-3">
+            <p-autoComplete #surrenderJoint [(ngModel)]="mdlSurrenderJoint"
+              [suggestions]="stationSuggestions" (completeMethod)="filterJoints($event)"
+              (onSelect)="handleSelectSurrenderJoint()" [minLength]="2" placeholder="наименование или код"
+              (ngModelChange)="handleSurrenderJointChange()" [inputStyleClass]="mdlSurrenderJointFilled" >
+            </p-autoComplete>
+          </div>
+          <div class="ui-g-12 ui-lg-1 ui-md-1">
+            <button pButton type="button"
+            [ngClass]="{'dropdownbutton': true,'svg-padding':true}" (click)="handleSurrenderJointDropdown(surrenderJoint)" >
+              <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDExLjQ2YTEsMSwwLDAsMCwxLjQyLDBsMy0zQTEsMSwwLDEsMCwxNC4yOSw3TDEyLDkuMzQsOS43MSw3QTEsMSwwLDEsMCw4LjI5LDguNDZabTMsMS4wOEwxMiwxNC44NGwtMi4yOS0yLjNBMSwxLDAsMCwwLDguMjksMTRsMywzYTEsMSwwLDAsMCwxLjQyLDBsMy0zYTEsMSwwLDAsMC0xLjQyLTEuNDJaIi8+PC9zdmc+">  
+            </button> 
+          </div>
+
+        </div>
+      </p-fieldset>
+      
+    </p-accordionTab>
+  </p-accordion>
+
+
+  <p-accordion>
+    <p-accordionTab header="Груз" [selected]="true">
+      <div class="ui-g">
+        <div class="ui-g-12  ui-lg-12">
+          <div class="ui-g-12 ui-md-12 ui-lg-1" [ngClass]="{offset:true}">
+            ГНГ*
+          </div>
+
+          <div class="ui-g-12 ui-lg-11">
+            <div class="ui-g-12 ui-md-9 ui-lg-9">
+              <p-autoComplete #gng [(ngModel)]="mdlGng" [suggestions]="gngSuggestions"
+                (completeMethod)="filterGng($event)" (onSelect)="handleSelectGng()" [minLength]="2"
+                (ngModelChange)="handleChangeGng()" placeholder="наименование или код груза по справочнику ГНГ"
+                [disabled]="gngDisabled" (mouseenter)="handleMouseEnter($event, gng, mdlGng)"
+                (mouseleave)="handleMouseLeave()" [inputStyleClass]="mdlGngFilled" >
+              </p-autoComplete>
+            </div>
+            <div class="ui-g-12 ui-md-2 ui-lg-2">
+              <input type="text" pInputText [(ngModel)]="mdlGngCode" [ngClass]="{highlight:mdlGngCodeFilled}" readonly [disabled]="gngDisabled" />
+            </div>
+            <div class="ui-g-12 ui-md-1 ui-lg-1">
+              <button pButton type="button" (click)="handleClearGng()" [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+                <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE1LjcxLDguMjlhMSwxLDAsMCwwLTEuNDIsMEwxMiwxMC41OSw5LjcxLDguMjlBMSwxLDAsMCwwLDguMjksOS43MUwxMC41OSwxMmwtMi4zLDIuMjlhMSwxLDAsMCwwLDAsMS40MiwxLDEsMCwwLDAsMS40MiwwTDEyLDEzLjQxbDIuMjksMi4zYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40MkwxMy40MSwxMmwyLjMtMi4yOUExLDEsMCwwLDAsMTUuNzEsOC4yOVpNMTksMkg1QTMsMywwLDAsMCwyLDVWMTlhMywzLDAsMCwwLDMsM0gxOWEzLDMsMCwwLDAsMy0zVjVBMywzLDAsMCwwLDE5LDJabTEsMTdhMSwxLDAsMCwxLTEsMUg1YTEsMSwwLDAsMS0xLTFWNUExLDEsMCwwLDEsNSw0SDE5YTEsMSwwLDAsMSwxLDFaIi8+PC9zdmc+"> 
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-12  ui-lg-12">
+          <div class="ui-g-12 ui-md-12 ui-lg-1" [ngClass]="{offset:true}">
+            ЕТСНГ*
+          </div>
+          <div class="ui-g-12 ui-lg-11">
+
+            <div class="ui-g-12 ui-md-9 ui-lg-9">
+              <p-autoComplete #etsng [(ngModel)]="mdlEtsng" [suggestions]="etsngSuggestions"
+                (completeMethod)="filterEtsng()" (onSelect)="handleSelectEtsng()" [minLength]="2"
+                (ngModelChange)="handleChangeEtsng()" [placeholder]="mdlHintEtsng" (onFocus)="handleFocusEtsng()"
+                [disabled]="etsngDisabled" (mouseenter)="handleMouseEnter($event, etsng, mdlEtsng)"
+                (mouseleave)="handleMouseLeave()" [inputStyleClass]="mdlEtsngFilled" >
+              </p-autoComplete>
+            </div>
+            <div class="ui-g-12 ui-md-2 ui-lg-2">
+              <input type="text" pInputText size="6" [(ngModel)]="mdlEtsngCode" [ngClass]="{highlight:mdlEtsngCodeFilled}" [disabled]="etsngDisabled" readonly />
+            </div>
+            <div class="ui-g-12 ui-md-1 ui-lg-1">
+              <button pButton type="button" (click)="handleClearEtsng()"
+                [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+                <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE1LjcxLDguMjlhMSwxLDAsMCwwLTEuNDIsMEwxMiwxMC41OSw5LjcxLDguMjlBMSwxLDAsMCwwLDguMjksOS43MUwxMC41OSwxMmwtMi4zLDIuMjlhMSwxLDAsMCwwLDAsMS40MiwxLDEsMCwwLDAsMS40MiwwTDEyLDEzLjQxbDIuMjksMi4zYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40MkwxMy40MSwxMmwyLjMtMi4yOUExLDEsMCwwLDAsMTUuNzEsOC4yOVpNMTksMkg1QTMsMywwLDAsMCwyLDVWMTlhMywzLDAsMCwwLDMsM0gxOWEzLDMsMCwwLDAsMy0zVjVBMywzLDAsMCwwLDE5LDJabTEsMTdhMSwxLDAsMCwxLTEsMUg1YTEsMSwwLDAsMS0xLTFWNUExLDEsMCwwLDEsNSw0SDE5YTEsMSwwLDAsMSwxLDFaIi8+PC9zdmc+">  
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="ui-g-12 ui-lg-12">
+          <div class="ui-g-12 ui-md-2 ui-lg-1" [ngClass]="{offset:true}">
+            Вес, кг*
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-lg-1">
+            <input type="string" pInputText [(ngModel)]="mdlCargoWeight" (keypress)="checkCargoWeight($event)"
+              (ngModelChange)="handleChangeCargoWeight()" [ngClass]="{highlight:mdlWeightCargoFilled}" />
+          </div>
+          <div class="ui-g-12 ui-md-7 ui-lg-10">
+          </div>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion (onOpen)="handleOpenWagTab()" (onClose)="handleCloseWagTab()">
+    <p-accordionTab [header]="mdlHeaderWagTab" [selected]="tabWagVisible">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-md-12 ui-lg-6">
+          <div class="ui-g-12 ui-lg-1" [ngClass]="{offset:true}">
+            Тип*
+          </div>
+          <div class="ui-g-12 ui-lg-11">
+            <div class="ui-g-12 ui-md-11 ui-lg-10">
+              <p-autoComplete #wagType [(ngModel)]="mdlWagType" [suggestions]="mdlWagTypeSuggestions"
+                (completeMethod)="handleFilteredWagTypes()" (onSelect)="handleWagTypeSelect()" [minLength]="2"
+                (onDropdownClick)="handleWagTypeDropdown()" 
+                (mouseenter)="handleMouseEnter($event, wagType, mdlWagType)" (mouseleave)="handleMouseLeave()"
+                [readonly]="mdlWagTypeReadOnly"  (ngModelChange)="handleChangeWagType()" [inputStyleClass]="mdlWagTypeFilled" >
+              </p-autoComplete>
+
+              <p-dialog header="Выбор типа вагона" [(visible)]="mdlWagTypePanelDisplay" [width]="400">
+                <p-dataTable [value]="mdlWagTypeTableSuggestions" scrollHeight="250px" [(selection)]="mdlWagTypeRow"
+                  (onRowSelect)="handleWagTypeRowSelect($event)" [scrollable]="true" selectionMode="single">
+                  <p-column field="name_web" header="наим."></p-column>
+                  <p-column field="osi" header="оси" [style]="{'width':'50px'}"></p-column>
+                  <p-column field="grp" header="груз-сть" [style]="{'width':'70px'}"></p-column>
+                  <p-column field="tara" header="тара" [style]="{'width':'50px'}"></p-column>
+                </p-dataTable>
+              </p-dialog>
+            </div>
+            <div class="ui-g-12 ui-md-1 ui-lg-2">
+              <button pButton type="button" (click)="handleWagTypeDropdown()"
+                [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+                <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTEyLDEwYTIsMiwwLDEsMCwyLDJBMiwyLDAsMCwwLDEyLDEwWk01LDEwYTIsMiwwLDEsMCwyLDJBMiwyLDAsMCwwLDUsMTBabTE0LDBhMiwyLDAsMSwwLDIsMkEyLDIsMCwwLDAsMTksMTBaIi8+PC9zdmc+"> 
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-6">
+          <div class="ui-g-12 ui-md-4 ui-lg-4" [ngClass]="{offset:true}">
+            Принадлежность*
+          </div>
+          <div class="ui-g-12 ui-md-8 ui-lg-8">
+            <p-dropdown #wagOwnership [options]="mdlOwnershipItems" [(ngModel)]="mdlWagOwnershipItem"
+              (onChange)="handleWagOwnershipChange($event)" [style]="{'width':'170px'}" >
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-4">
+          <div class="ui-g-12 ui-md-5 ui-lg-7" [ngClass]="{offset:true}">
+            Грузоподъемность, т*
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-2">
+            <input type="text" pInputText [(ngModel)]="mdlWagCapacity" (keypress)="checkWagCapacity($event)"
+              (ngModelChange)="handleWagCapacityChange()" [ngClass]="{highlight:mdlWagCapacityFilled}" />
+          </div>
+          <div class="ui-g-12 ui-md-6 ui-lg-3">
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-3">
+          <div class="ui-g-12 ui-md-2 ui-lg-3" [ngClass]="{offset:true}">
+            Оси*
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-3">
+            <input type="text" pInputText [(ngModel)]="mdlPivots" (keypress)="checkPivots($event)"
+              (ngModelChange)="handlePivotsChange()" [ngClass]="{highlight:mdlPivotsFilled}" />
+          </div>
+          <div class="ui-g-12 ui-md-9 ui-lg-6">
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-5">
+          <div class="ui-g-12 ui-md-4 ui-lg-5" [ngClass]="{offset:true}">
+            Администрация-собственница*
+          </div>
+          <div class="ui-g-12 ui-md-7 ui-lg-5">
+            <p-autoComplete #ks [(ngModel)]="mdlKs" [suggestions]="ksSuggestions" (completeMethod)="handleCompleteKs()"
+              (onSelect)="handleSelectKs()" [minLength]="2" [disabled]="ksDisabled"  
+              (ngModelChange)="handleKsChange()" [inputStyleClass]="mdlKsFilled"  >
+            </p-autoComplete>
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-2">
+            <button pButton type="button"
+            [ngClass]="{'dropdownbutton': true,'svg-padding':true}" (click)="handleKsDropdown(ks)" >
+              <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDExLjQ2YTEsMSwwLDAsMCwxLjQyLDBsMy0zQTEsMSwwLDEsMCwxNC4yOSw3TDEyLDkuMzQsOS43MSw3QTEsMSwwLDEsMCw4LjI5LDguNDZabTMsMS4wOEwxMiwxNC44NGwtMi4yOS0yLjNBMSwxLDAsMCwwLDguMjksMTRsMywzYTEsMSwwLDAsMCwxLjQyLDBsMy0zYTEsMSwwLDAsMC0xLjQyLTEuNDJaIi8+PC9zdmc+">  
+            </button> 
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-12">
+          <div class="ui-g-12 ui-lg-3">
+            <div class="ui-g-12 ui-md-3 ui-lg-6" [ngClass]="{offset:true}">
+              Проводники
+            </div>
+            <div class="ui-g-12 ui-md-1 ui-lg-2">
+              <input type="text" pInputText [(ngModel)]="mdlConductors" (keypress)="checkConductors($event)"
+                (ngModelChange)="handleConductorsChange()" [ngClass]="{highlight:mdlConductorsFilled}" />
+            </div>
+            <div class="ui-g-12 ui-md-8 ui-lg-4">
+            </div>
+          </div>
+          <div class="ui-g-12 ui-lg-9">
+          </div>
+        </div>
+
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion (onOpen)="handleOpenContTab()" (onClose)="handleCloseContTab()">
+    <p-accordionTab header="Контейнер" [selected]="tabContVisible">
+      <div class="ui-g">
+        <div class="ui-g-12 ui-lg-6">
+          <div class="ui-g-12 ui-md-12 ui-lg-2" [ngClass]="{offset:true}">
+            Тип*
+          </div>
+          <div class="ui-g-12 ui-md-11 ui-lg-8">
+            <p-autoComplete #contType [(ngModel)]="mdlContType" [suggestions]="contTypeSuggestions"
+              (completeMethod)="handleCompleteContTypes()" (onSelect)="handleSelectContType()" [minLength]="2" 
+              (mouseenter)="handleMouseEnter($event, contType, mdlContType)" (mouseleave)="handleMouseLeave()"
+              (ngModelChange)="handleChangeContType()" [inputStyleClass]="mdlContTypeFilled" >
+            </p-autoComplete>
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-1">
+            <button pButton type="button" 
+              (click)="handleContTypeDropdown(contType)" 
+              [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+              <!-- <img  src="{{Url}}icons/angle-double-down.svg"> -->
+              <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDExLjQ2YTEsMSwwLDAsMCwxLjQyLDBsMy0zQTEsMSwwLDEsMCwxNC4yOSw3TDEyLDkuMzQsOS43MSw3QTEsMSwwLDEsMCw4LjI5LDguNDZabTMsMS4wOEwxMiwxNC44NGwtMi4yOS0yLjNBMSwxLDAsMCwwLDguMjksMTRsMywzYTEsMSwwLDAsMCwxLjQyLDBsMy0zYTEsMSwwLDAsMC0xLjQyLTEuNDJaIi8+PC9zdmc+">  
+            </button> 
+          </div>
+          <div class="ui-g-12 ui-lg-1">
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-6">
+          <div class="ui-g-12 ui-md-4 ui-lg-4" [ngClass]="{offset:true}">
+            Принадлежность*
+          </div>
+          <div class="ui-g-12 ui-md-8 ui-lg-8">
+            <p-dropdown #contOwnership [options]="mdlOwnershipItems" [(ngModel)]="mdlContOwnershipItem"
+              (onChange)="onContOwnershipChange($event)" [style]="{'width':'180px'}" [disabled]="ownershipDisabled">
+            </p-dropdown>
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-4">
+          <div class="ui-g-12 ui-md-3 ui-lg-4" [ngClass]="{offset:true}">
+            Футовость*
+          </div>
+          <div class="ui-g-12 ui-md-3 ui-lg-7">
+            <p-dropdown #foot [options]="mdlFootItems" [(ngModel)]="mdlFootItem" (onChange)="handleFootChange($event)"
+              [style]="{'width':'60px'}" [disabled]="footDisabled">
+            </p-dropdown>
+
+          </div>
+          <div class="ui-g-12 ui-lg-1">
+
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-4">
+          <div class="ui-g-12 ui-md-5 ui-lg-8" [ngClass]="{offset:true}">
+            Грузоподъемность, т *
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-2">
+            <input type="text" pInputText [(ngModel)]="mdlContPayload" (keypress)="handleKeyPressContPayload($event)"
+              (ngModelChange)="handleContPayloadChange()" [ngClass]="{highlight:mdlContPayloadFilled}" />
+          </div>
+          <div class="ui-g-12 ui-md-6 ui-lg-2">
+
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-4">
+          <div class="ui-g-12 ui-md-3 ui-lg-4" [ngClass]="{offset:true}">
+            Количество
+          </div>
+          <div class="ui-g-12 ui-md-1 ui-lg-2">
+            <input type="text" pInputText [(ngModel)]="mdlContCol" (ngModelChange)="handleContColChange()" 
+              (keypress)="handleKeyPressContCol($event)" [ngClass]="{highlight:mdlContColFilled}" />
+          </div>
+          <div class="ui-g-12 ui-md-8 ui-lg-6">
+          </div>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+
+  <p-accordion (onOpen)="handleOpenExtendTab($event)" (onClose)="handleCloseExtendTab($event)">
+    <p-accordionTab [header]="mdlHeaderExtendTab" [selected]="tabExtendVisible" >
+      <div class="ui-g">
+
+        <div class="ui-g-12 ui-lg-7">
+          <div class="ui-g-12 ui-lg-4" [ngClass]="{offset:true}">
+            Тарифные отметки
+          </div>
+
+          <div class="ui-g-12 ui-g-8">
+            <div class="ui-g-12 ui-md-11 ui-lg-7">
+              <input type="text" #specialMarks pInputText [(ngModel)]="mdlSpecMarkChips"  readonly
+                [disabled]="specMarkDisabled"  [ngClass]="{highlight:mdlSpecMarksFilled}" />
+            </div>
+            <div class="ui-g-12 ui-md-1 ui-lg-5">
+              <button type="button" pButton 
+              [ngClass]="{'dropdownbutton': true,'svg-padding':true}" 
+              (click)="handleSpecMarkClick()" [disabled]="specMarkDisabled">
+              <!-- <img  src="{{Url}}icons/dropdown.svg">  -->
+              <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDExLjQ2YTEsMSwwLDAsMCwxLjQyLDBsMy0zQTEsMSwwLDEsMCwxNC4yOSw3TDEyLDkuMzQsOS43MSw3QTEsMSwwLDEsMCw4LjI5LDguNDZabTMsMS4wOEwxMiwxNC44NGwtMi4yOS0yLjNBMSwxLDAsMCwwLDguMjksMTRsMywzYTEsMSwwLDAsMCwxLjQyLDBsMy0zYTEsMSwwLDAsMC0xLjQyLTEuNDJaIi8+PC9zdmc+">  
+            </button>
+
+            <p-dialog header="Выбор тарифных отметок" [(visible)]="mdlSpecMarkPanelDisplay"
+              [contentStyle]="{'overflow':'visible'}">
+              <div class="ui-g-12">
+                <p-listbox [options]="mdlSpecMarkSuggestions" [(ngModel)]="mdlSelectedSpecMarks" multiple="multiple"
+                  checkbox="checkbox" optionLabel="name" [listStyle]="{'max-height':'180px'}">
+                </p-listbox>
+              </div>
+              <div class="ui-g-12">
+                <div class="ui-g-9">
+                </div>
+                <div class="ui-g-3">
+                  <button type="button" pButton (click)="handleHideSpecMarkPanel()" >
+                    <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE4LjcxLDcuMjFhMSwxLDAsMCwwLTEuNDIsMEw5Ljg0LDE0LjY3LDYuNzEsMTEuNTNBMSwxLDAsMSwwLDUuMjksMTNsMy44NCwzLjg0YTEsMSwwLDAsMCwxLjQyLDBsOC4xNi04LjE2QTEsMSwwLDAsMCwxOC43MSw3LjIxWiIvPjwvc3ZnPg==">  
+                    <!-- <img  src="{{Url}}icons/ok.svg">    -->
+                  </button>
+                </div>
+              </div>
+
+            </p-dialog>
+            </div>   
+          </div>
+        </div>
+
+        <div class="ui-g-12  ui-lg-5">
+        </div>
+
+        <div class="ui-g-12 ui-lg-6">
+          <div class="ui-g-12 ui-md-2 ui-lg-2" [ngClass]="{offset:true}">
+            Валюта*
+          </div>
+          <div class="ui-g-12 ui-md-4 ui-lg-6">
+            <p-dropdown #currency [options]="mdlCurrencyItems" [(ngModel)]="mdlCurrencyItem" [editable]="false"
+              (onChange)="handleCurrencyChange($event)" >
+            </p-dropdown>
+          </div>
+          <div class="ui-g-12 ui-md-6 ui-lg-4">
+          </div>
+        </div>
+
+        <div class="ui-g-12 ui-lg-6">
+          <div class="ui-g-12 ui-md-3 ui-lg-2" [ngClass]="{offset:true}">
+            Скорость
+          </div>
+          <div class="ui-g-12 ui-md-9 ui-lg-8">
+            <p-dropdown #velocity [options]="mdlVelocities" [(ngModel)]="mdlVelocity" (onChange)="onVelocityChange($event)">
+            </p-dropdown>
+          </div>
+        </div>
+      </div>
+    </p-accordionTab>
+  </p-accordion>
+  <div class="ui-g">
+    <div class="ui-g-12 ui-lg-5">
+      <div class="ui-g-12 ui-md-3 ui-lg-4" [ngClass]="{offset:true}">
+        <b>Плата, {{Currency}}</b>
+      </div>
+      <div class="ui-g-12 ui-md-3 ui-lg-4">
+        <input type="text" pInputText [(ngModel)]="mdlPay" readonly [ngClass]="{highlight:mdlPayFilled}"
+        />
+      </div>
+      <!--<div class="ui-g-12 ui-md-1 ui-lg-1">
+      </div> -->
+      <div class="ui-g-12 ui-md-6 ui-lg-4" *ngIf="btnReportsDisplay">
+        <button type="button" pButton (click)="handleFullRep()" pTooltip="Детальный отчет"
+          [ngClass]="{'dropdownbutton': true,'svg-padding':true}"  
+          tooltipPosition="top">
+          <!-- <img  src="{{Url}}icons/list.svg">   -->
+          <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTMuNzEsMTYuMjlhMSwxLDAsMCwwLS4zMy0uMjEsMSwxLDAsMCwwLS43NiwwLDEsMSwwLDAsMC0uMzMuMjEsMSwxLDAsMCwwLS4yMS4zMywxLDEsMCwwLDAsLjIxLDEuMDksMS4xNSwxLjE1LDAsMCwwLC4zMy4yMS45NC45NCwwLDAsMCwuNzYsMCwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMSwxLDEsMCwwLDAsLjIxLTEuMDlBMSwxLDAsMCwwLDMuNzEsMTYuMjlaTTcsOEgyMWExLDEsMCwwLDAsMC0ySDdBMSwxLDAsMCwwLDcsOFpNMy43MSwxMS4yOWExLDEsMCwwLDAtMS4wOS0uMjEsMS4xNSwxLjE1LDAsMCwwLS4zMy4yMSwxLDEsMCwwLDAtLjIxLjMzLjk0Ljk0LDAsMCwwLDAsLjc2LDEuMTUsMS4xNSwwLDAsMCwuMjEuMzMsMS4xNSwxLjE1LDAsMCwwLC4zMy4yMS45NC45NCwwLDAsMCwuNzYsMCwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMSwxLjE1LDEuMTUsMCwwLDAsLjIxLS4zMy45NC45NCwwLDAsMCwwLS43NkExLDEsMCwwLDAsMy43MSwxMS4yOVpNMjEsMTFIN2ExLDEsMCwwLDAsMCwySDIxYTEsMSwwLDAsMCwwLTJaTTMuNzEsNi4yOWExLDEsMCwwLDAtLjMzLS4yMSwxLDEsMCwwLDAtMS4wOS4yMSwxLjE1LDEuMTUsMCwwLDAtLjIxLjMzLjk0Ljk0LDAsMCwwLDAsLjc2LDEuMTUsMS4xNSwwLDAsMCwuMjEuMzMsMS4xNSwxLjE1LDAsMCwwLC4zMy4yMSwxLDEsMCwwLDAsMS4wOS0uMjEsMS4xNSwxLjE1LDAsMCwwLC4yMS0uMzMuOTQuOTQsMCwwLDAsMC0uNzZBMS4xNSwxLjE1LDAsMCwwLDMuNzEsNi4yOVpNMjEsMTZIN2ExLDEsMCwwLDAsMCwySDIxYTEsMSwwLDAsMCwwLTJaIi8+PC9zdmc+">  
+        </button>
+        <button type="button" pButton (click)="handleShortRep($event)" pTooltip="Сводный отчет"
+          tooltipPosition="top"
+          [ngClass]="{'dropdownbutton': true,'svg-padding':true}" >
+          <!-- <img  src="{{Url}}icons/table.svg">   -->
+          <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTIxLDJIM0ExLDEsMCwwLDAsMiwzVjIxYTEsMSwwLDAsMCwxLDFIMjFhMSwxLDAsMCwwLDEtMVYzQTEsMSwwLDAsMCwyMSwyWk04LDIwSDRWMTZIOFptMC02SDRWMTBIOFpNOCw4SDRWNEg4Wm02LDEySDEwVjE2aDRabTAtNkgxMFYxMGg0Wm0wLTZIMTBWNGg0Wm02LDEySDE2VjE2aDRabTAtNkgxNlYxMGg0Wm0wLTZIMTZWNGg0WiIvPjwvc3ZnPg==">  
+
+        </button>
+      </div>
+      <div class="ui-g-12 ui-md-6 ui-lg-4" *ngIf="!btnReportsDisplay">
+      </div>
+    </div>
+    <div class="ui-g-12 ui-lg-7">
+      <div class="ui-g-12 ui-md-6 ui-sm-6 ui-lg-3">
+        <button type="button" pButton (click)="handleTax()" [disabled]="calcDisabled"
+          pTooltip="Расчет платы за перевозку груза" tooltipPosition="top" 
+          [ngClass]="{'svg-text-padding':true}" >
+            <img align="top"
+              src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGRhdGEtbmFtZT0iTGF5ZXIgMSIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSIjRkZFRjJCIiBkPSJNMTIuNzEsMTcuMjlhMSwxLDAsMCwwLS4xNi0uMTIuNTYuNTYsMCwwLDAtLjE3LS4wOS42LjYsMCwwLDAtLjE5LS4wNi45My45MywwLDAsMC0uNTcuMDYuOS45LDAsMCwwLS41NC41NEEuODQuODQsMCwwLDAsMTEsMThhMSwxLDAsMCwwLC4wNy4zOCwxLjQ2LDEuNDYsMCwwLDAsLjIyLjMzQTEsMSwwLDAsMCwxMiwxOWEuODQuODQsMCwwLDAsLjM4LS4wOCwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMUExLDEsMCwwLDAsMTMsMThhMSwxLDAsMCwwLS4wOC0uMzhBMSwxLDAsMCwwLDEyLjcxLDE3LjI5Wk04LjU1LDEzLjE3YS41Ni41NiwwLDAsMC0uMTctLjA5QS42LjYsMCwwLDAsOC4xOSwxM2EuODYuODYsMCwwLDAtLjM5LDBsLS4xOC4wNi0uMTguMDktLjE1LjEyQTEuMDUsMS4wNSwwLDAsMCw3LDE0YTEsMSwwLDAsMCwuMjkuNzEsMS4xNSwxLjE1LDAsMCwwLC4zMy4yMUExLDEsMCwwLDAsOSwxNGExLjA1LDEuMDUsMCwwLDAtLjI5LS43MVptLjE2LDQuMTJhMSwxLDAsMCwwLS4zMy0uMjFBMSwxLDAsMCwwLDcuOCwxN2wtLjE4LjA2YS43Ni43NiwwLDAsMC0uMTguMDksMS41OCwxLjU4LDAsMCwwLS4xNS4xMiwxLDEsMCwwLDAtLjIxLjMzLjk0Ljk0LDAsMCwwLDAsLjc2LDEuMTUsMS4xNSwwLDAsMCwuMjEuMzNBMSwxLDAsMCwwLDgsMTlhLjg0Ljg0LDAsMCwwLC4zOC0uMDgsMS4xNSwxLjE1LDAsMCwwLC4zMy0uMjEsMS4xNSwxLjE1LDAsMCwwLC4yMS0uMzMuOTQuOTQsMCwwLDAsMC0uNzZBMSwxLDAsMCwwLDguNzEsMTcuMjlabTIuOTEtNC4yMWExLDEsMCwwLDAtLjMzLjIxQTEuMDUsMS4wNSwwLDAsMCwxMSwxNGExLDEsMCwwLDAsMS4zOC45MiwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMUExLDEsMCwwLDAsMTMsMTRhMS4wNSwxLjA1LDAsMCwwLS4yOS0uNzFBMSwxLDAsMCwwLDExLjYyLDEzLjA4Wm01LjA5LDQuMjFhMS4xNSwxLjE1LDAsMCwwLS4zMy0uMjEsMSwxLDAsMCwwLTEuMDkuMjEsMSwxLDAsMCwwLS4yMS4zMy45NC45NCwwLDAsMCwwLC43NiwxLjE1LDEuMTUsMCwwLDAsLjIxLjMzQTEsMSwwLDAsMCwxNiwxOWEuODQuODQsMCwwLDAsLjM4LS4wOCwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMSwxLDEsMCwwLDAsLjIxLTEuMDlBMSwxLDAsMCwwLDE2LjcxLDE3LjI5Wk0xNiw1SDhBMSwxLDAsMCwwLDcsNnY0YTEsMSwwLDAsMCwxLDFoOGExLDEsMCwwLDAsMS0xVjZBMSwxLDAsMCwwLDE2LDVaTTE1LDlIOVY3aDZabTMtOEg2QTMsMywwLDAsMCwzLDRWMjBhMywzLDAsMCwwLDMsM0gxOGEzLDMsMCwwLDAsMy0zVjRBMywzLDAsMCwwLDE4LDFabTEsMTlhMSwxLDAsMCwxLTEsMUg2YTEsMSwwLDAsMS0xLTFWNEExLDEsMCwwLDEsNiwzSDE4YTEsMSwwLDAsMSwxLDFabS0yLjQ1LTYuODNhLjU2LjU2LDAsMCwwLS4xNy0uMDkuNi42LDAsMCwwLS4xOS0uMDYuODYuODYsMCwwLDAtLjM5LDBsLS4xOC4wNi0uMTguMDktLjE1LjEyQTEuMDUsMS4wNSwwLDAsMCwxNSwxNGExLDEsMCwwLDAsMS4zOC45MiwxLjE1LDEuMTUsMCwwLDAsLjMzLS4yMUExLDEsMCwwLDAsMTcsMTRhMS4wNSwxLjA1LDAsMCwwLS4yOS0uNzFaIi8+PC9zdmc+">    
+            Расчет
+        </button>
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2 ui-lg-3">
+        <button type="button" pButton (click)="handleClear()" pTooltip="Новый расчет"
+          tooltipPosition="top"
+          [ngClass]="{'svg-padding':true}" >
+          <!-- <img  src="{{Url}}icons/clear.svg">   -->
+          <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE5LDVIOS44M2EzLDMsMCwwLDAtMi4xMi44OEwyLjI5LDExLjI5YTEsMSwwLDAsMCwwLDEuNDJsNS40Miw1LjQxQTMsMywwLDAsMCw5LjgzLDE5SDE5YTMsMywwLDAsMCwzLTNWOEEzLDMsMCwwLDAsMTksNVptMSwxMWExLDEsMCwwLDEtMSwxSDkuODNhMS4wNSwxLjA1LDAsMCwxLS43MS0uMjlMNC40MSwxMiw5LjEyLDcuMjlBMS4wNSwxLjA1LDAsMCwxLDkuODMsN0gxOWExLDEsMCwwLDEsMSwxWk0xNi43MSw5LjI5YTEsMSwwLDAsMC0xLjQyLDBMMTQsMTAuNTlsLTEuMjktMS4zYTEsMSwwLDAsMC0xLjQyLDEuNDJMMTIuNTksMTJsLTEuMywxLjI5YTEsMSwwLDAsMCwwLDEuNDIsMSwxLDAsMCwwLDEuNDIsMEwxNCwxMy40MWwxLjI5LDEuM2ExLDEsMCwwLDAsMS40MiwwLDEsMSwwLDAsMCwwLTEuNDJMMTUuNDEsMTJsMS4zLTEuMjlBMSwxLDAsMCwwLDE2LjcxLDkuMjlaIi8+PC9zdmc+">  
+        </button> <!-- label="Новый" -->
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2 ui-lg-3">
+        <button type="button"  pButton (click)="handleHelp()" pTooltip="Справка"
+          tooltipPosition="top"
+          [ngClass]="{'svg-padding':true}" >
+          <!-- <img src="{{Url}}icons/help.svg">    -->
+          <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjI5LDE1LjI5YTEuNTgsMS41OCwwLDAsMC0uMTIuMTUuNzYuNzYsMCwwLDAtLjA5LjE4LjY0LjY0LDAsMCwwLS4wNi4xOCwxLjM2LDEuMzYsMCwwLDAsMCwuMi44NC44NCwwLDAsMCwuMDguMzguOS45LDAsMCwwLC41NC41NC45NC45NCwwLDAsMCwuNzYsMCwuOS45LDAsMCwwLC41NC0uNTRBMSwxLDAsMCwwLDEzLDE2YTEsMSwwLDAsMC0uMjktLjcxQTEsMSwwLDAsMCwxMS4yOSwxNS4yOVpNMTIsMkExMCwxMCwwLDEsMCwyMiwxMiwxMCwxMCwwLDAsMCwxMiwyWm0wLDE4YTgsOCwwLDEsMSw4LThBOCw4LDAsMCwxLDEyLDIwWk0xMiw3QTMsMywwLDAsMCw5LjQsOC41YTEsMSwwLDEsMCwxLjczLDFBMSwxLDAsMCwxLDEyLDlhMSwxLDAsMCwxLDAsMiwxLDEsMCwwLDAtMSwxdjFhMSwxLDAsMCwwLDIsMHYtLjE4QTMsMywwLDAsMCwxMiw3WiIvPjwvc3ZnPg==">  
+        </button><!-- label="Помощь" -->
+      </div>
+      <div class="ui-g-12 ui-md-2 ui-sm-2 ui-lg-3">
+        <button type="button" pButton (click)="handleBrowsers()"
+          pTooltip="Совместимость с браузерами" tooltipPosition="top"
+          [ngClass]="{'svg-padding':true}" >
+          <!-- <img src="{{Url}}icons/browser.svg">   -->
+          <img  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE5LDJIOUEzLDMsMCwwLDAsNiw1VjZINUEzLDMsMCwwLDAsMiw5VjE5YTMsMywwLDAsMCwzLDNIMTVhMywzLDAsMCwwLDMtM1YxOGgxYTMsMywwLDAsMCwzLTNWNUEzLDMsMCwwLDAsMTksMlpNMTYsMTlhMSwxLDAsMCwxLTEsMUg1YTEsMSwwLDAsMS0xLTFWMTJIMTZabTAtOUg0VjlBMSwxLDAsMCwxLDUsOEgxNWExLDEsMCwwLDEsMSwxWm00LDVhMSwxLDAsMCwxLTEsMUgxOFY5YTMsMywwLDAsMC0uMTgtMUgyMFptMC05SDhWNUExLDEsMCwwLDEsOSw0SDE5YTEsMSwwLDAsMSwxLDFaIi8+PC9zdmc+">  
+        </button> <!-- label="Браузеры" -->
+      </div>
+    </div>
+
+    <div class="ui-g-12 ui-md-12 ui-lg-12" *ngIf="testMode">
+      <div class="ui-g-12 ui-lg-1">
+        <button type="button" pButton label="Тест" (click)="onTest()"></button>
+      </div>
+      <div class="ui-g-12 ui-lg-11">
+      </div>
+    </div>
+
+  </div>
+
+</div>

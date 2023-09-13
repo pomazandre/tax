@@ -1,0 +1,7 @@
+<p-dialog [(visible)]="display" [closable]="false" [width]="width">
+    <p-header>
+        {{title}}
+    </p-header>
+    {{text}}
+    <p-progressBar [value]="tick" [showValue]="false"></p-progressBar>
+</p-dialog>

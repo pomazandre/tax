@@ -1,0 +1,7 @@
+{
+  "local": true,
+  "remote": true,
+  "logAPI": "/scripts/logger.php",
+  "statAPI": "/scripts/stat.php",
+  "period": 15
+}

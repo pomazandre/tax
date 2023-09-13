@@ -1,0 +1,9 @@
+{
+  "Nsi" : "/wps/proxy/http/sapodf/scripts/",
+  "calcTest" : "",
+  "calcDemo" : "/wps/proxy/http/sapods%3a8080/webSAPOD/",
+  "Assets" : "/wps/proxy/http/sapodf/assets/",
+  "Log" : "/wps/proxy/http/sapodf/conf/",
+  "routeTimeout": 7000,
+  "calcTimeout": 15000
+}

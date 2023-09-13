@@ -1,0 +1,53 @@
+<p-dialog header="Маршрут" [(visible)]="mdlDisplay" [width]="460">
+  <div class="ui-g-12" *ngIf="displayJoints">
+    <b>Станции перехода</b>
+  </div>
+  <div class="ui-g-12" *ngIf="displayJoints">
+    <div class="ui-g-3">
+      Входная
+    </div>
+    <div class="ui-g-9">
+      <div class="ui-g-3">
+        <input type="text" pInputText [(ngModel)]="mdlInJointCode" />
+      </div>
+      <div class="ui-g-9">
+        <input type="text" pInputText [(ngModel)]="mdlInJoint" />
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12" *ngIf="displayJoints">
+    <div class="ui-g-3">
+      Выходная
+    </div>
+    <div class="ui-g-9">
+      <div class="ui-g-3">
+        <input type="text" pInputText [(ngModel)]="mdlOutJointCode" />
+      </div>
+      <div class="ui-g-9">
+        <input type="text" pInputText [(ngModel)]="mdlOutJoint" />
+      </div>
+    </div>
+  </div>
+  <div class="ui-g-12">
+  </div>
+  <div class="ui-g-12">
+    <p-dataTable [value]="mdlStations" scrollable="true" scrollHeight="250px" [ngStyle]="{'text-align': 'center'}">
+      <p-column field="kod" header="код" [style]="{'width':'60px'}"></p-column>
+      <p-column field="name" header="наименование"></p-column>
+      <p-column field="country" header="страна"></p-column>
+      <p-column field="dist" header="расстояние, км" [style]="{'width':'85px'}"></p-column>
+    </p-dataTable>
+  </div>
+  <div class="ui-g-12">
+    <div class="ui-g-2">
+      <p></p>
+      <button type="button" pButton (click)="hide()" pTooltip="Назад" tooltipPosition="top">
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTExLjQ2LDguMjlhMSwxLDAsMCwwLTEuNDIsMGwtMywzYTEsMSwwLDAsMCwwLDEuNDJsMywzYTEsMSwwLDAsMCwxLjQyLDAsMSwxLDAsMCwwLDAtMS40Mkw5LjE2LDEybDIuMy0yLjI5QTEsMSwwLDAsMCwxMS40Niw4LjI5Wk0xNC42NiwxMiwxNyw5LjcxYTEsMSwwLDAsMC0xLjQyLTEuNDJsLTMsM2ExLDEsMCwwLDAsMCwxLjQybDMsM2ExLDEsMCwwLDAsMS40MiwwLDEsMSwwLDAsMCwwLTEuNDJaIi8+PC9zdmc+">  
+      </button>
+      <p></p>
+    </div>
+    <div class="ui-g-10">
+
+    </div>
+  </div>
+</p-dialog>

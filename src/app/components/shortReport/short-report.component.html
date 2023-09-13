@@ -1,0 +1,30 @@
+<p-dialog header="Сводный отчет" [(visible)]="display" modal="modal" width="400">
+  <div class="ui-g-12">
+    <p-dataTable [value]="mdlView" scrollable="true" scrollHeight="250px" scrollWidth="350px" selectionMode="single"
+      [ngStyle]="{'text-align': 'center'}">
+      <p-column field="Country" header="страна"></p-column>
+      <p-column field="Dist" header="расстояние, км"></p-column>
+      <p-column field="payView" header="плата, {{Currency}}"></p-column>
+    </p-dataTable>
+  </div>
+  <div class="ui-g-12">
+    <p></p>
+  </div>
+  <div class="ui-g-12">
+    <div class="ui-g-3">
+      <button type="button" pButton (click)="handleClose()" label="ОK">
+        <!-- <img  height="20" src="{{Url}}icons/ok.svg">   -->
+        <img  height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTE4LjcxLDcuMjFhMSwxLDAsMCwwLTEuNDIsMEw5Ljg0LDE0LjY3LDYuNzEsMTEuNTNBMSwxLDAsMSwwLDUuMjksMTNsMy44NCwzLjg0YTEsMSwwLDAsMCwxLjQyLDBsOC4xNi04LjE2QTEsMSwwLDAsMCwxOC43MSw3LjIxWiIvPjwvc3ZnPg==">    
+        </button>
+    </div>
+    <div class="ui-g-3">
+      <button type="button" pButton (click)="handlePrint()" label="Печать">
+        <!-- <img  height="20" src="{{Url}}icons/printer.svg">    -->
+        <img height="20" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTcsMTBhMSwxLDAsMSwwLDEsMUExLDEsMCwwLDAsNywxMFpNMTksNkgxOFYzYTEsMSwwLDAsMC0xLTFIN0ExLDEsMCwwLDAsNiwzVjZINUEzLDMsMCwwLDAsMiw5djZhMywzLDAsMCwwLDMsM0g2djNhMSwxLDAsMCwwLDEsMUgxN2ExLDEsMCwwLDAsMS0xVjE4aDFhMywzLDAsMCwwLDMtM1Y5QTMsMywwLDAsMCwxOSw2Wk04LDRoOFY2SDhabTgsMTZIOFYxNmg4Wm00LTVhMSwxLDAsMCwxLTEsMUgxOFYxNWExLDEsMCwwLDAtMS0xSDdhMSwxLDAsMCwwLTEsMXYxSDVhMSwxLDAsMCwxLTEtMVY5QTEsMSwwLDAsMSw1LDhIMTlhMSwxLDAsMCwxLDEsMVoiLz48L3N2Zz4=">  
+      </button>
+    </div>
+    <div class="ui-g-6">
+
+    </div>
+  </div>
+</p-dialog>

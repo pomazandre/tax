@@ -1,0 +1,9 @@
+{
+  "version": "1.0.887",
+  "nsi": "/scripts/",
+  "calc": "http://gcsapod:8080/webSAPOD/",
+  "assets": "/assets/",
+  "log": "/conf/",
+  "routeTimeout": 40000,
+  "calcTimeout": 60000
+}

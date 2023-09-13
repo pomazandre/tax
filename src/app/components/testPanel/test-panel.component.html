@@ -1,0 +1,22 @@
+<p-dialog header="Тестирование" [(visible)]="Display" modal="modal" width="330">
+  <div class="ui-g-12">
+    <div class="ui-g-6">
+      Число прогонов
+    </div>
+    <div class="ui-g-6">
+      <input type="text" pInputText [(ngModel)]="mdlRunCount" />
+    </div>
+  </div>
+  <div class="ui-g-12">
+    <div class="ui-g-4">
+    </div>
+    <div class="ui-g-4">
+      <button type="button" pButton (click)="runTests()" label="OK"></button>
+    </div>
+    <div class="ui-g-4">
+      <button type="button" pButton (click)="Display=false" label="Отмена"></button>
+    </div>
+  </div>
+</p-dialog>
+
+

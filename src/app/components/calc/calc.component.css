@@ -1,0 +1,47 @@
+.label {
+font-weight: bold;
+}
+.blank {
+    border: 0;
+    height: 1;
+}
+.required{
+  color : #0000FF;
+}
+ .ui-inputtext {
+    font-weight: bold;
+}
+.valid-error{
+  color : red;
+}
+.dropdownbutton{
+  width : 28px;
+  height: 28px;
+}
+.svg-padding{
+  padding-top: 2px;
+}
+.svg-text-padding{
+  padding-top: 3px;
+  padding-bottom: 3px;
+  color: yellow;
+
+}
+.clear-background{
+  background : white;
+}
+.offset{
+  padding-top:0.4em !important;
+}
+.lightoffset{
+  padding-top:0.3em !important;
+}
+.ui-accordion-header{
+  font-weight: bold !important;
+}
+.boldd{
+    font-weight: 900 !important;
+  }
+.highlight{
+  background-color: #FFFFCC;
+}

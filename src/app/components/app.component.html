@@ -1,0 +1,100 @@
+<style>
+  .footer-label-right {
+    text-align: right;
+    font-size: 7pt;
+  }
+  .footer-label {
+    font-size: 7pt;
+  }
+  .headercolor {
+    color: blue;
+  }
+  .caption-general  {
+     display: flex;
+     align-items: center;
+    }
+   .caption-details {
+    display: inline;
+    margin-block-start: 0em !important;
+    margin-block-end: 0px !important;
+    padding:0.25em !important;
+    margin: 0.25em !important;
+  }
+</style>
+<p-blockUI [blocked]="mdlBlockUI"></p-blockUI>
+<app-progress></app-progress>
+<app-error></app-error>
+<app-errorNsi (onLoadNsi)="loadNsi($event)"></app-errorNsi>
+<p *ngIf="!mdlIsValidBrowser">
+  Приложение совместимо с браузерами: <br />
+  - Chrome (версия 26.0.0 и выше); <br />
+  - Opera (версия 16.0.0 и выше); <br />
+  - IE (версии 10, 11), Edge; <br />
+  Ваш браузер: {{mdlBrowserInfo.name}} {{mdlBrowserInfo.version}}<br />
+  <b>Сервис таксировки груза не совместим с Вашим браузером.</b><br />
+  <br />
+  вебСАПОД v{{VERSION}} build {{BUILD}}
+</p>
+<div class="content-section implementation ui-fluid" *ngIf="_mdlIsValidBrowser">
+  <div class="ui-g">
+    <div class="ui-g-2">
+    </div>
+    <div class="ui-g-8">
+      <p-panel>
+        <p-header>
+
+          <div class="ui-g-12 ui-lg-12">
+            <div class="ui-g-12 ui-md-12 ui-lg-3 caption-general" >
+              <p class="caption-details">
+              <a href="#" (click)="handleGoHome()">ТАКСИРОВКА ГРУЗА</a>
+              </p>
+            </div>
+
+            <div class="ui-g-12 ui-md-3 ui-sm-5 ui-lg-2" *ngIf="showUI">
+              <p-calendar [(ngModel)]="mdlDate" [locale]="Ru" [showIcon]="true" dataType="string" readonlyInput="true"
+                dateFormat="dd.mm.yy" (ngModelChange)="handleChangeDate()" [inputStyleClass]="mdlDateFilled" 
+                [disabled]="dateDisabled">
+              </p-calendar>
+            </div>
+            <div class="ui-g-12 ui-lg-2" *ngIf="!showUI">
+            </div>
+
+            <div class="ui-g-12 ui-md-1 ui-sm-7 ui-lg-1">
+            </div>
+
+            <div class="ui-g-12 ui-md-8 ui-sm-12 ui-lg-6" *ngIf="showUI">
+              Вид отправки
+              <p-dropdown #svo [options]="svos" [(ngModel)]="mdlSvoItem" [editable]="false" [style]="{'width':'200px'}"
+              (onChange)="handleSvoChange($event)" [disabled]="svoDisabled">
+            </p-dropdown>
+            </div>
+            <div class="ui-g-12 ui-lg-6" *ngIf="!showUI">
+            </div>
+
+          </div>
+        </p-header>
+        <router-outlet></router-outlet>
+      </p-panel>
+
+      <div class="ui-g-12 ui-lg-12">
+        <div class="ui-g-5 ui-md-5 ui-lg-5">
+          <p class="footer-label">
+          © ГЦ АСУ КТЦ БЖД 2020
+        </p>
+        </div>
+        <div class="ui-g-3 ui-md-3 ui-lg-3">
+        </div>
+        <div class="ui-g-4 ui-md-4 ui-lg-4 footer-label-right" *ngIf="showUI">
+          <p class="footer-label-right">v{{VERSION}} b{{BUILD}} <br />
+            SAPOD v{{backendVersion}} {{backendDate}}<br />
+            tariff {{tariffPolicyDate}}
+          </p>
+        </div>
+        <div class="ui-g-4 ui-md-4 ui-lg-4 footer-label-right" *ngIf="!showUI">
+        </div>
+      </div>
+    </div>
+    <div class="ui-g-2">
+    </div>
+  </div>
+</div>
